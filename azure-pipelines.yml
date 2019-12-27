@@ -17,3 +17,4 @@ steps:
 - task: DotNetCoreCLI@2
   inputs:
     command: 'test'
+    projects: 'FlowR/FlowR/FlowR.Tests/FlowR.Tests.csproj'
