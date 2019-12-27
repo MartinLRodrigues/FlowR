@@ -13,6 +13,7 @@ steps:
 - task: DotNetCoreCLI@2
   inputs:
     command: 'build'
+    projects: 'FlowR/FlowR.sln'
 - task: DotNetCoreCLI@2
   inputs:
     command: 'test'
