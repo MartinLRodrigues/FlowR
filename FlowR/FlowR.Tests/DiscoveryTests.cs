@@ -281,9 +281,12 @@ namespace FlowR.Tests
         {
             public const string FlowCriteria = "FlowCriteria";
 
-            public override IEnumerable<FlowDefinition> GetFlowDefinitionOverrides(Type requestType)
+            public override IEnumerable<IFlowDefinition> GetFlowDefinitionOverrides(Type requestType)
             {
-                return requestType == typeof(EmptyFlowRequest) ? new[] { new FlowDefinition(FlowCriteria) } : null;
+                return requestType == 
+                    typeof(EmptyFlowRequest) 
+                        ? new IFlowDefinition[] { new FlowDefinition<EmptyFlowRequest, EmptyFlowResponse>(FlowCriteria) } 
+                        : null;
             }
         }
 
@@ -307,8 +310,8 @@ namespace FlowR.Tests
 
         private class EmptyFlowRequestDefaultOverrideProvider : TestOverrideProviderBase
         {
-            public override IEnumerable<FlowDefinition> GetFlowDefinitionOverrides(Type requestType) => 
-                requestType == typeof(EmptyFlowRequest) ? new[] { new FlowDefinition() } : null;
+            public override IEnumerable<IFlowDefinition> GetFlowDefinitionOverrides(Type requestType) => 
+                requestType == typeof(EmptyFlowRequest) ? new[] { new FlowDefinition<EmptyFlowRequest, EmptyFlowResponse>() } : null;
         }
 
         [Fact]
@@ -365,7 +368,7 @@ namespace FlowR.Tests
 
             Assert.NotNull(flowDiagram);
 
-            var dotNotation = flowDiagram.GetDotNotation();
+            var dotNotation = flowDiagram.GetDotDiagram();
 
             Assert.Matches($"Activity.*color={FlowDiagram.RequestOverrideColor}", dotNotation);
         }
@@ -662,7 +665,7 @@ namespace FlowR.Tests
 
         private void AssertDiagramFlow(FlowDiagram flowDiagram, IEnumerable<string> expectedFlowLines)
         {
-            var dotNotation = flowDiagram.GetDotNotation();
+            var dotNotation = flowDiagram.GetDotDiagram();
             Assert.NotEmpty(dotNotation);
 
             _output.WriteLine(dotNotation);
@@ -678,10 +681,11 @@ namespace FlowR.Tests
 
         private IMediator GetMediator(IFlowOverrideProvider overrideProvider = null)
         {
-            var serviceCollection = new ServiceCollection()
-                .AddMediatR(typeof(IFlowHandler).Assembly);
+            var serviceCollection = 
+                new ServiceCollection()
+                    .AddMediatR(typeof(IFlowHandler).Assembly);
 
-            FlowDiscovery.RegisterFlowTypes(typeof(EmptyFlow).Assembly,
+            typeof(EmptyFlow).Assembly.RegisterFlowTypes(
                 (intType, impType) => serviceCollection.AddSingleton(intType, impType));
 
             if (overrideProvider != null)

@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using FlowR;
 using MediatR;
 
-namespace TwentyQuestions
+namespace TwentyQuestions.Core
 {
     public class QuestionRequest : FlowActivityRequest<QuestionResponse>
     {
@@ -40,14 +39,12 @@ namespace TwentyQuestions
 
         public Task<QuestionResponse> Handle(QuestionRequest request, CancellationToken cancellationToken)
         {
-            _console.WriteLine("****************************************************");
             _console.WriteLine($"{request.Question}?");
             _console.WriteLine(string.Join(", ", request.Answers));
 
             var options =
-                request.Answers.Select(a =>
-                        Regex.Match(a, "\\[(?<answer>[^]])\\]").Groups["answer"].Value.ToUpper())
-                    .ToHashSet();
+                new HashSet<string>(request.Answers.Select(a =>
+                    Regex.Match(a, "\\[(?<answer>[^]])\\]").Groups["answer"].Value.ToUpper()));
 
             var answer = _console.ReadLine()?.ToUpper();
 
@@ -57,9 +54,14 @@ namespace TwentyQuestions
                 answer = _console.ReadLine()?.ToUpper();
             }
 
-            _console.WriteLine("****************************************************");
-
             return Task.FromResult(new QuestionResponse { Answer = answer });
         }
+    }
+
+    public static class QuestionRequestMocks
+    {
+        public static FlowContext MockQuestionActivity(this FlowContext flowContext, string stepName, string answer) =>
+            flowContext.MockActivity<QuestionRequest, QuestionResponse>(stepName, req => 
+                new QuestionResponse { Answer = answer });
     }
 }
