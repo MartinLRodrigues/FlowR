@@ -24,5 +24,8 @@ steps:
   inputs:
     command: 'pack'
     packagesToPack: 'FlowR/FlowR/FlowR.csproj'
+    packDirectory: '$(Build.ArtifactStagingDirectory)'
+    nobuild: true
     versioningScheme: 'off'
     versionEnvVar: 'GITVERSION_NUGETVERSION'
+
