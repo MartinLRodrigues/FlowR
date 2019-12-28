@@ -31,7 +31,7 @@
     <None Update="Client2AppSettings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Client1AppSettings.json">
+    <None Update="_Client1AppSettings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
