@@ -23,6 +23,6 @@ steps:
   condition: succeeded()
   inputs:
     command: 'pack'
-    packagesToPack: 'FlowR/FlowR.csproj'
+    packagesToPack: 'FlowR/FlowR/FlowR.csproj'
     versioningScheme: 'off'
     versionEnvVar: 'GITVERSION_NUGETVERSION'
