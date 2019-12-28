@@ -19,3 +19,11 @@ steps:
   inputs:
     command: 'test'
     projects: 'FlowR/FlowR.Tests/FlowR.Tests.csproj'
+- task: DotNetCoreCLI@2
+  condition: success()
+  inputs:
+    command: 'pack'
+    packagesToPack: '**/*.csproj'
+    includesymbols: true
+    includesource: true
+    versioningScheme: 'off'
