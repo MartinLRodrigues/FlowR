@@ -24,6 +24,5 @@ steps:
   inputs:
     command: 'pack'
     packagesToPack: '**/*.csproj'
-    includesymbols: true
-    includesource: true
     versioningScheme: 'off'
+    versionEnvVar: 'GITVERSION_NUGETVERSION'
